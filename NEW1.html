@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Sustainability Portal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root{
+      /* Eco palette */
+      --bg0:#07130f;
+      --bg1:#0b1f18;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.14);
+
+      --text:#eafff6;
+      --muted: rgba(234,255,246,.75);
+
+      --accent:#3cffad;   /* mint */
+      --accent2:#7cff4a;  /* leaf */
+      --warn:#ffd166;     /* gentle yellow */
+
+      --shadow: 0 18px 50px rgba(0,0,0,.45);
+      --shadow2: 0 10px 30px rgba(0,0,0,.35);
+
+      --r12: 12px;
+      --r16: 16px;
+      --r20: 20px;
+
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(1200px 600px at 15% 10%, rgba(60,255,173,.20), transparent 55%),
+        radial-gradient(900px 500px at 85% 20%, rgba(124,255,74,.16), transparent 55%),
+        radial-gradient(900px 650px at 60% 90%, rgba(80,170,255,.10), transparent 60%),
+        linear-gradient(135deg, var(--bg0), var(--bg1));
+      overflow-x: hidden;
+    }
+
+    /* Decorative grid */
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity: .08;
+      mask-image: radial-gradient(900px 500px at 50% 0%, black 40%, transparent 72%);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(var(--max), 92vw); margin: 0 auto; }
+
+    /* Top bar */
+    .topbar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(7,19,15,.85), rgba(7,19,15,.45));
+      border-bottom: 1px solid rgba(255,255,255,.10);
+    }
+
+    .topbar-inner{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 0;
+    }
+
+    .brand{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 220px;
+    }
+    .logo{
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      background:
+        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.60), transparent 55%),
+        linear-gradient(135deg, rgba(60,255,173,.9), rgba(124,255,74,.75));
+      box-shadow: 0 10px 25px rgba(60,255,173,.22);
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.25);
+    }
+    .logo svg{ opacity:.95; }
+
+    .brand-title{
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+    .brand-title strong{
+      font-size: 0.98rem;
+      letter-spacing: .2px;
+    }
+    .brand-title span{
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .nav{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav a{
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      font-weight: 500;
+      font-size: .92rem;
+      color: rgba(234,255,246,.92);
+    }
+    .nav a:hover{
+      transform: translateY(-1px);
+      background: rgba(60,255,173,.10);
+      border-color: rgba(60,255,173,.28);
+    }
+    .nav a:focus-visible{
+      outline: 3px solid rgba(60,255,173,.35);
+      outline-offset: 2px;
+    }
+
+    /* Hero */
+    .hero{
+      padding: 40px 0 22px;
+    }
+    .hero-grid{
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+    .hero-card{
+      border-radius: var(--r20);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow2);
+      padding: 26px 26px 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(500px 180px at 20% 0%, rgba(60,255,173,.20), transparent 60%),
+        radial-gradient(500px 180px at 90% 40%, rgba(124,255,74,.16), transparent 60%);
+      opacity: .9;
+      pointer-events:none;
+    }
+    .hero-card > *{ position: relative; z-index: 1; }
+
+    .kicker{
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(60,255,173,.25);
+      background: rgba(60,255,173,.10);
+      color: rgba(234,255,246,.92);
+      font-size: .86rem;
+      font-weight: 500;
+      width: fit-content;
+    }
+    .hero h1{
+      margin: 12px 0 8px;
+      font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+      line-height: 1.12;
+      letter-spacing: .2px;
+    }
+    .hero p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 62ch;
+    }
+
+    .quick-actions{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .qa{
+      border-radius: var(--r16);
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 16px;
+      box-shadow: 0 8px 22px rgba(0,0,0,.25);
+      transition: transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+    .qa:hover{
+      transform: translateY(-2px);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(60,255,173,.22);
+    }
+    .qa .row{
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .qa .title{
+      font-weight: 600;
+      font-size: .98rem;
+    }
+    .qa .meta{
+      color: var(--muted);
+      font-size: .86rem;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-size: .82rem;
+      color: rgba(234,255,246,.92);
+      white-space: nowrap;
+    }
+
+    /* Sections */
+    .sections{
+      padding: 22px 0 40px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .card{
+      border-radius: var(--r20);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-head{
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+    }
+
+    .card-title{
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon{
+      width: 40px; height: 40px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(10px 10px at 30% 30%, rgba(255,255,255,.55), transparent 55%),
+        linear-gradient(135deg, rgba(60,255,173,.28), rgba(124,255,74,.18));
+      display: grid;
+      place-items: center;
+    }
+
+    .card-title h2{
+      margin: 0;
+      font-size: 1.18rem;
+      letter-spacing: .2px;
+    }
+    .card-title p{
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.4;
+    }
+
+    .card-body{
+      padding: 18px 20px 22px;
+    }
+
+    /* Form layout */
+    form{
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+
+    .field{
+      grid-column: span 6;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field.full{ grid-column: 1 / -1; }
+
+    label{
+      font-size: .86rem;
+      color: rgba(234,255,246,.86);
+      font-weight: 500;
+    }
+
+    input[type="text"], select, textarea, input[type="file"]{
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(7,19,15,.35);
+      color: var(--text);
+      padding: 12px 12px;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    input[type="file"]{
+      padding: 10px 12px;
+      background: rgba(255,255,255,.04);
+    }
+
+    textarea{
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input::placeholder, textarea::placeholder{
+      color: rgba(234,255,246,.55);
+    }
+
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(60,255,173,.55);
+      box-shadow: 0 0 0 4px rgba(60,255,173,.18);
+      background: rgba(7,19,15,.55);
+    }
+
+    .actions{
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+
+    .btn{
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: .2px;
+      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #062116;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 14px 30px rgba(60,255,173,.18);
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .btn:active{ transform: translateY(0px); }
+    .btn:focus-visible{
+      outline: 3px solid rgba(60,255,173,.35);
+      outline-offset: 2px;
+    }
+
+    .hint{
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.45;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Stats */
+    .stats{
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+    .stat{
+      grid-column: span 3;
+      border-radius: var(--r16);
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      padding: 16px 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::after{
+      content:"";
+      position:absolute;
+      width: 240px; height: 140px;
+      right: -90px; top: -70px;
+      background: radial-gradient(circle at 30% 30%, rgba(60,255,173,.20), transparent 60%);
+      pointer-events:none;
+    }
+    .stat .big{
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: .2px;
+      margin: 0 0 4px;
+    }
+    .stat .small{
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.35;
+    }
+    .stat .tag{
+      margin-top: 10px;
+      display:inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-size: .78rem;
+      color: rgba(234,255,246,.88);
+      width: fit-content;
+    }
+
+    /* Footer */
+    footer{
+      padding: 26px 0 34px;
+      color: rgba(234,255,246,.65);
+      text-align: center;
+      font-size: .9rem;
+    }
+
+    /* Toast */
+    .toast{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 60;
+      display: grid;
+      gap: 10px;
+    }
+    .toast-item{
+      width: min(360px, calc(100vw - 36px));
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(7,19,15,.85);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow2);
+      padding: 12px 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      animation: pop .18s ease-out;
+    }
+    @keyframes pop{
+      from{ transform: translateY(10px); opacity: 0; }
+      to{ transform: translateY(0px); opacity: 1; }
+    }
+    .toast-dot{
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      margin-top: 5px;
+      box-shadow: 0 0 0 4px rgba(60,255,173,.14);
+      flex: 0 0 auto;
+    }
+    .toast-title{
+      margin: 0;
+      font-weight: 700;
+      font-size: .92rem;
+    }
+    .toast-msg{
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.35;
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .brand{ min-width: unset; }
+      .stat{ grid-column: span 6; }
+    }
+    @media (max-width: 640px){
+      .topbar-inner{ padding: 10px 0; }
+      .nav{ justify-content: flex-start; }
+      .hero{ padding-top: 26px; }
+      .card-body{ padding: 16px 16px 18px; }
+      .card-head{ padding: 16px; }
+      .field{ grid-column: 1 / -1; }
+      .stat{ grid-column: 1 / -1; }
+      .actions{ flex-direction: column; align-items: stretch; }
+      .btn{ width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sticky Top Bar -->
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand" aria-label="Campus Sustainability Portal">
+        <div class="logo" aria-hidden="true">
+          <!-- Leaf icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M20 4c-7 1-12 6-13 13" stroke="rgba(6,33,22,.95)" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M7 17c-1.5 1.5-3.5 2-5 2 0-1.5.5-3.5 2-5 2.5-2.5 6.5-3 9-3-.1 2.6-.6 6.6-3 9Z"
+                  fill="rgba(6,33,22,.92)"/>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <strong>Campus Sustainability Portal</strong>
+          <span>Christ University, Kengeri • 2026</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#biodiversity">Biodiversity</a>
+        <a href="#waste">Waste Report</a>
+        <a href="#trashhunt">Trash Hunt</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="wrap hero-grid">
+      <section class="hero-card" aria-label="Overview">
+        <div class="kicker">
+          <span aria-hidden="true">🌍</span>
+          <span>Global Access Platform • Monitor • Report • Improve</span>
+        </div>
+        <h1>Track waste, protect biodiversity, and improve campus sustainability.</h1>
+        <p>
+          Use this portal to log biodiversity sightings, report waste issues, and view weekly waste indicators.
+          Clean UI, consistent data, and fast reporting — perfect for CSP documentation.
+        </p>
+      </section>
+
+      <aside class="quick-actions" aria-label="Quick actions">
+        <a class="qa" href="#biodiversity">
+          <div class="row">
+            <div class="title">Log a Biodiversity Sighting</div>
+            <div class="pill">📷 Photo + Tag</div>
+          </div>
+          <div class="meta">Upload an image, choose type, add location + notes.</div>
+        </a>
+
+        <a class="qa" href="#trashhunt">
+          <div class="row">
+            <div class="title">Report Waste (Trash Hunt)</div>
+            <div class="pill">🧹 Quick Report</div>
+          </div>
+          <div class="meta">Pinpoint a spot with a photo + short description.</div>
+        </a>
+
+        <a class="qa" href="#waste">
+          <div class="row">
+            <div class="title">View Weekly Indicators</div>
+            <div class="pill">📊 Stats</div>
+          </div>
+          <div class="meta">Show totals, segregation efficiency, and hotspots.</div>
+        </a>
+      </aside>
+    </div>
+  </header>
+
+  <main class="wrap sections">
+    <!-- Biodiversity -->
+    <section class="card" id="biodiversity" aria-label="Biodiversity Log">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon" aria-hidden="true">🦋</div>
+          <div>
+            <h2>Biodiversity Log</h2>
+            <p>Record campus species observations for protection and awareness.</p>
+          </div>
+        </div>
+        <span class="pill" title="Tip">✅ Use exact location</span>
+      </div>
+
+      <div class="card-body">
+        <form id="bioForm">
+          <div class="field full">
+            <label for="bioPhoto">Upload photo</label>
+            <input id="bioPhoto" type="file" accept="image/*" />
+          </div>
+
+          <div class="field">
+            <label for="bioType">Category</label>
+            <select id="bioType">
+              <option>Bird</option>
+              <option>Plant</option>
+              <option>Insect</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="bioLocation">Campus location</label>
+            <input id="bioLocation" type="text" placeholder="e.g., Library garden / Block C entrance" />
+          </div>
+
+          <div class="field full">
+            <label for="bioNotes">Additional notes</label>
+            <textarea id="bioNotes" rows="4" placeholder="e.g., Count seen, behavior, nearby habitat, time of day..."></textarea>
+          </div>
+
+          <div class="actions">
+            <div class="hint">
+              <span aria-hidden="true">📝</span>
+              Keep notes short + clear so your CSP findings are easy to present.
+            </div>
+            <button class="btn" type="submit">
+              <span aria-hidden="true">🌿</span>
+              Submit Observation
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Waste report -->
+    <section class="card" id="waste" aria-label="Weekly Waste Report">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon" aria-hidden="true">♻️</div>
+          <div>
+            <h2>Weekly Waste Report</h2>
+            <p>Snapshot indicators to support your campus sustainability study.</p>
+          </div>
+        </div>
+        <span class="pill" title="Update weekly">🗓️ Weekly</span>
+      </div>
+
+      <div class="card-body">
+        <div class="stats">
+          <div class="stat">
+            <p class="big" id="statTotal">---</p>
+            <p class="small">Total Waste (kg)</p>
+            <div class="tag">Measure + record</div>
+          </div>
+
+          <div class="stat">
+            <p class="big" id="statSeg">---</p>
+            <p class="small">Segregation Efficiency</p>
+            <div class="tag">Dry / Wet / E-waste</div>
+          </div>
+
+          <div class="stat">
+            <p class="big" id="statZone">---</p>
+            <p class="small">High Waste Zone</p>
+            <div class="tag">Hotspot tracking</div>
+          </div>
+
+          <div class="stat">
+            <p class="big" id="statAware">---</p>
+            <p class="small">Awareness Score</p>
+            <div class="tag">Survey / observation</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; color: rgba(234,255,246,.72); font-size:.9rem; line-height:1.5;">
+          Tip: Replace the <strong>---</strong> with your real values every week (or connect it to a sheet later).
+          For CSP, add a short note on how you measured each stat.
+        </div>
+      </div>
+    </section>
+
+    <!-- Trash hunt -->
+    <section class="card" id="trashhunt" aria-label="Trash Hunt">
+      <div class="card-head">
+        <div class="card-title">
+          <div class="icon" aria-hidden="true">🧹</div>
+          <div>
+            <h2>Trash Hunt – Report Waste</h2>
+            <p>Log unmanaged waste spots so maintenance can act quickly.</p>
+          </div>
+        </div>
+        <span class="pill" title="Add photo for proof">📸 Photo helps</span>
+      </div>
+
+      <div class="card-body">
+        <form id="trashForm">
+          <div class="field full">
+            <label for="trashPhoto">Upload photo</label>
+            <input id="trashPhoto" type="file" accept="image/*" />
+          </div>
+
+          <div class="field full">
+            <label for="trashLocation">Location</label>
+            <input id="trashLocation" type="text" placeholder="e.g., Canteen back gate / Parking near Block B" />
+          </div>
+
+          <div class="field full">
+            <label for="trashDesc">Description</label>
+            <textarea id="trashDesc" rows="4" placeholder="e.g., Mixed waste near bins, plastic pile, overflowing bin..."></textarea>
+          </div>
+
+          <div class="actions">
+            <div class="hint">
+              <span aria-hidden="true">⚠️</span>
+              Mention the nearest landmark so it’s easy to locate.
+            </div>
+            <button class="btn" type="submit">
+              <span aria-hidden="true">📨</span>
+              Report to Maintenance
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Campus Sustainability Initiative • Designed for CSP Waste Management & Biodiversity Documentation
+  </footer>
+
+  <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    // Small UX: "submit" -> toast message (no backend)
+    const toastRoot = document.getElementById("toast");
+
+    function showToast(title, msg){
+      const item = document.createElement("div");
+      item.className = "toast-item";
+      item.innerHTML = `
+        <div class="toast-dot" aria-hidden="true"></div>
+        <div>
+          <p class="toast-title">${title}</p>
+          <p class="toast-msg">${msg}</p>
+        </div>
+      `;
+      toastRoot.appendChild(item);
+      setTimeout(() => item.remove(), 3500);
+    }
+
+    function safePreventSubmit(formId, title, msg){
+      const f = document.getElementById(formId);
+      if(!f) return;
+      f.addEventListener("submit", (e) => {
+        e.preventDefault();
+        showToast(title, msg);
+        f.reset();
+      });
+    }
+
+    safePreventSubmit(
+      "bioForm",
+      "Observation submitted",
+      "Saved locally for demo. Add your data collection method in CSP notes."
+    );
+
+    safePreventSubmit(
+      "trashForm",
+      "Report submitted",
+      "Saved locally for demo. Share location + photo with maintenance if required."
+    );
+  </script>
+</body>
+</html>
